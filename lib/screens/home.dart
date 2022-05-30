@@ -16,14 +16,14 @@ class _HomeScreenState extends State<Homescreen> {
   TextEditingController _heightController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
   double _bmiResult = 0;
-
+  String _textResult = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "BMI Caclulator",
+          "BMI Calulator",
           style: TextStyle(color: accentHexColor, fontWeight: FontWeight.w300),
         ),
         backgroundColor: Colors.transparent,
@@ -43,6 +43,7 @@ class _HomeScreenState extends State<Homescreen> {
                 Container(
                   width: 130,
                   child: TextField(
+                    controller: _heightController,
                     style: TextStyle(
                         fontSize: 42,
                         fontWeight: FontWeight.w300,
@@ -60,6 +61,7 @@ class _HomeScreenState extends State<Homescreen> {
                 Container(
                   width: 130,
                   child: TextField(
+                    controller: _weightController,
                     style: TextStyle(
                         fontSize: 42,
                         fontWeight: FontWeight.w300,
@@ -79,38 +81,57 @@ class _HomeScreenState extends State<Homescreen> {
             SizedBox(
               height: 30,
             ),
-            Container(
-              child: Text(
-                "Calculate",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: accentHexColor),
-              ),
+            GestureDetector(
+              onTap: (){
+                double _h = double.parse(_heightController.text);
+                double _w = double.parse(_weightController.text);
+                setState((){
+                  _bmiResult = _w /(_h * _h);
+                  if(_bmiResult > 25){
+                    _textResult = "Over Weight";
+                  }else if(_bmiResult >= 18.5 && _bmiResult <=  25){
+                    _textResult = "Normal Weight";
+                  }else{
+                    _textResult = "Under Weight";
+                  }
+                });
 
+              },
+              child: Container(
+                child: Text(
+                  "Calculate",
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: accentHexColor),
+                ),
+
+              ),
             ),
             SizedBox(
               height: 50,
             ),
             Container(
               child: Text(
-                "10",
+                _bmiResult.toStringAsFixed(2),
                 style: TextStyle(
                     fontSize: 90,
                     color: accentHexColor),
               ),
-
             ),
             SizedBox(height: 30,),
-            Container(
-              child: Text(
-                "Normal Weight",
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                    fontSize: 32,
-                    color: accentHexColor),
-              ),
+            Visibility(
+              visible: _textResult.isNotEmpty,
+              child: Container(
+                child: Text(
+                  _textResult,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                      fontSize: 32,
+                      color: accentHexColor),
+                ),
 
+              ),
             ),
             SizedBox(height: 10,),
             LeftBar(barWidth: 40),
